@@ -21,6 +21,11 @@ namespace YAGOL
             Handle = o;
         }
 
+        public void Bind()
+        {
+            GL.BindTexture(TextureTarget, Handle);
+        }
+
         public void SetParameter(TextureParameterName parameterName, params int[] value)
         {
             GL.TextureParameterI(Handle, parameterName, value);

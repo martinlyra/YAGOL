@@ -48,7 +48,9 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ShaderAttributeInfo.cs" />
     <Compile Include="ShaderProgram.cs" />
+    <Compile Include="ShaderUniformInfo.cs" />
     <Compile Include="SubShader.cs" />
     <Compile Include="Texture.cs" />
     <Compile Include="Yagol.cs" />

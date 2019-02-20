@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenTK.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,7 @@ namespace YAGOL
     {
         static void Main(string[] args)
         {
-            using (var instance = new Yagol())
+            using (var instance = new Yagol(800, 600, GraphicsMode.Default))
                 instance.Run(15.0);
         }
     }

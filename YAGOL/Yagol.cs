@@ -1,4 +1,5 @@
 ﻿using OpenTK;
+using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using System;
 
@@ -6,13 +7,25 @@ namespace YAGOL
 {
     class Yagol : GameWindow
     {
+        public Yagol()
+            : this(800, 600, GraphicsMode.Default)
+        {
+        }
+
+        public Yagol(int width, int height, GraphicsMode mode) 
+            : base(width, height, mode)
+        {
+        }
+
         Texture FrontTexture { get; set; }
         Texture BackTexture { get; set; }
 
-        ShaderProgram GolShader { get; set; }
+        ShaderProgram StateShader { get; set; }
         ShaderProgram CopyShader { get; set; }
 
         int FrameBufferHandle { get; set; }
+
+        int Scale { get; set; } = 4;
 
         void SwapTextures ()
         {
@@ -35,8 +48,8 @@ namespace YAGOL
                 TextureTarget.Texture2D, 
                 0, 
                 PixelInternalFormat.Rgba, 
-                Width, 
-                Height, 
+                Width / Scale, 
+                Height / Scale, 
                 0,
                 PixelFormat.Rgba, 
                 PixelType.UnsignedByte, 
@@ -47,7 +60,7 @@ namespace YAGOL
 
         void SetState(byte[] newState)
         {
-            var size = Width * Height;
+            var size = Width * Height / Scale;
 
             var rgbaState = new byte[size * 4];
 
@@ -76,7 +89,7 @@ namespace YAGOL
 
         void RandomizeState()
         {
-            var size = Width * Height;
+            var size = Width * Height / Scale;
 
             var newState = new byte[size];
             var random = new Random();
@@ -94,7 +107,7 @@ namespace YAGOL
             FrontTexture = CreateTexture();
             BackTexture = CreateTexture();
 
-            GolShader = new ShaderProgram("Quad_Vert.glsl", "Gol_State_Fragment.glsl");
+            StateShader = new ShaderProgram("Quad_Vert.glsl", "Gol_State_Fragment.glsl");
             CopyShader = new ShaderProgram("Quad_Vert.glsl", "Gol_Copy_Fragment.glsl");
 
             RandomizeState();
@@ -109,7 +122,7 @@ namespace YAGOL
             FrontTexture.Dispose();
             BackTexture.Dispose();
 
-            GolShader.Dispose();
+            StateShader.Dispose();
             CopyShader.Dispose();
 
             GL.DeleteFramebuffer(FrameBufferHandle);
@@ -119,9 +132,13 @@ namespace YAGOL
 
         protected override void OnRenderFrame(FrameEventArgs e)
         {
-            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, FrameBufferHandle);
             GL.Viewport(0, 0, Width, Height);
-            GL.BindTexture(TextureTarget.Texture2D, FrontTexture.Handle);
+            FrontTexture.Bind();
+
+            CopyShader.Use();
+            CopyShader.SetUniform("state", 0);
+            CopyShader.SetUniform("scale", Scale);
 
             base.OnRenderFrame(e);
         }
@@ -135,7 +152,11 @@ namespace YAGOL
                 TextureTarget.Texture2D,
                 BackTexture.Handle, 0);
             GL.Viewport(0, 0, Width, Height);
-            GL.BindTexture(TextureTarget.Texture2D, FrontTexture.Handle);
+            FrontTexture.Bind();
+
+            StateShader.Use();
+            StateShader.SetUniform("state", 0);
+            StateShader.SetUniform("scale", Scale);
 
             SwapTextures();
 
