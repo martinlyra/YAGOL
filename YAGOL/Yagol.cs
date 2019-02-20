@@ -37,13 +37,13 @@ namespace YAGOL
         Texture CreateTexture ()
         {
             Texture tex = new Texture(TextureTarget.Texture2D);
+            tex.Bind();
 
             tex.SetParameter(TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
             tex.SetParameter(TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
             tex.SetParameter(TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
             tex.SetParameter(TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
 
-            GL.BindTexture(tex.TextureTarget, tex.Handle);
             GL.TexImage2D(
                 TextureTarget.Texture2D, 
                 0, 
@@ -112,8 +112,7 @@ namespace YAGOL
 
             RandomizeState();
 
-            int handle;
-            GL.CreateFramebuffers(1, out handle);
+            GL.CreateFramebuffers(1, out int handle);
             FrameBufferHandle = handle;
         }
 

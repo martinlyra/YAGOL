@@ -16,8 +16,7 @@ namespace YAGOL
         {
             TextureTarget = textureTarget;
 
-            int o;
-            GL.CreateTextures(textureTarget, 1, out o);
+            GL.CreateTextures(textureTarget, 1, out int o);
             Handle = o;
         }
 

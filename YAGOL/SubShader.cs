@@ -14,13 +14,11 @@ namespace YAGOL
 
         public SubShader(ShaderType type, string source)
         {
-            string info;
-
             Handle = GL.CreateShader(type);
 
             GL.ShaderSource(Handle, source);
             GL.CompileShader(Handle);
-            GL.GetShaderInfoLog(Handle, out info);
+            GL.GetShaderInfoLog(Handle, out string info);
 
             CompileStatus = GetParameter(ShaderParameter.CompileStatus);
             Info = info;
@@ -31,8 +29,7 @@ namespace YAGOL
 
         public int GetParameter(ShaderParameter parameter)
         {
-            int o;
-            GL.GetShader(Handle, parameter, out o);
+            GL.GetShader(Handle, parameter, out int o);
             return o;
         }
 
